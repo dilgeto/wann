@@ -66,7 +66,7 @@ the `wann_<task>` trainers of this repo. Needs `pip install optuna numpy pandas 
 ```bash
 python screening_reduce.py --task car --rounds 4 --n 30 --jobs 8 --omp 64          # Phase 1: narrow the search space
 python screening_full.py   --task car --mode both --n 20 --top 3 --seeds 11 --jobs 3 --omp 190   # Phase 2 + 3
-bash run_all.sh                      # acrobot, disc_mc and car, same protocol as wann-cpp's run_all.sh (TASKS="bipedal bottleneck" for the rest)
+bash run_all.sh                      # acrobot, disc_mc and car in sequence; no arguments (budget / parallelism are set at the top of the file)
 ```
 Tasks: `car acrobot disc_mc bipedal bottleneck`. Results land in `screening_reduce/<task>/` (`results.csv`,
 `space_log.jsonl`, `analysis.txt`) and `screening_full/<task>/` (`p2_results.csv`, `p3_summary.csv`,

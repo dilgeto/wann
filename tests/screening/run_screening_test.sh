@@ -14,14 +14,19 @@ echo "scratch dir: $W"
 echo "== search ranges equal wann-cpp's for the shared hyperparameters"
 $PY "$ROOT/tests/screening/check_ranges_vs_snn.py" | tail -2
 
-echo "== run_all.sh (acrobot, disc_mc, car; tiny sizes, fake trainer)"
-cp "$ROOT/run_all.sh" .
-EXE="$FAKE" PYTHON="$PY" ROUNDS=1 N_REDUCE=6 N_FULL=4 TOP=2 SEEDS=2 JOBS_REDUCE=3 OMP_REDUCE=1 JOBS_FULL=2 OMP_FULL=1 \
-    bash run_all.sh > run_all.txt
+echo "== run_all.sh (acrobot, disc_mc, car; no arguments; tiny sizes via sed, fake trainers in ./build)"
+mkdir -p build
+for t in acrobot disc_mc car bipedal bottleneck; do
+  printf '#!/bin/sh\nexec "%s" "$@"\n' "$FAKE" > build/wann_$t; chmod +x build/wann_$t
+done
+sed -E 's/^ROUNDS=[0-9]+/ROUNDS=1/; s/^N_REDUCE=[0-9]+/N_REDUCE=6/; s/^N_FULL=[0-9]+/N_FULL=4/; s/^TOP=[0-9]+/TOP=2/; s/^SEEDS=[0-9]+/SEEDS=2/; s/^JOBS_REDUCE=[0-9]+/JOBS_REDUCE=3/; s/^OMP_REDUCE=[0-9]+/OMP_REDUCE=1/; s/^JOBS_FULL=[0-9]+/JOBS_FULL=2/; s/^OMP_FULL=[0-9]+/OMP_FULL=1/' \
+    "$ROOT/run_all.sh" > run_all.sh
+grep -E '^(ROUNDS|N_REDUCE|N_FULL|TOP|SEEDS|JOBS_|OMP_)' run_all.sh | tr '\n' ' '; echo
+PATH="$(dirname "$PY"):$PATH" bash run_all.sh > run_all.txt 2>&1 || { tail -20 run_all.txt; exit 1; }
 for t in acrobot disc_mc car; do
   test -s screening_reduce/$t/results.csv && test -s screening_full/$t/p3_summary.csv && echo "  $t: reduce + full outputs present"
 done
-rm -rf screening_reduce screening_full log
+rm -rf screening_reduce screening_full log build run_all.sh
 
 echo "== Phase 1: screening_reduce (2 rounds x 16 trials; slow fake trainer so the pruner gets to poll)"
 FAKE_TRAINER_DELAY=0.4 $PY screening_reduce.py --task acrobot --exe "$FAKE" --rounds 2 --n 16 --jobs 4 --omp 1 --seed 3 > phase1.txt

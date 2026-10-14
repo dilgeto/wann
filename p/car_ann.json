@@ -1,6 +1,6 @@
 {
     "task": "ann_car",
-    "maxGen": 512,
+    "maxGen": 2048,
     "popSize": 480,
     "alg_wDist": "standard",
     "alg_nVals": 6,
