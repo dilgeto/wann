@@ -10,6 +10,7 @@
 // sorts disabled). RNG-driven choices cannot be compared draw by draw (numpy vs mt19937);
 // those are covered by test_operators.cpp (frequencies / invariants).
 #include "../include/wann/AnnCarTask.h"
+#include "../include/wann/CompiledNet.h"
 #include "../include/wann/Ind.h"
 #include "../include/wann/NsgaSort.h"
 #include "../include/wann/Wann.h"
@@ -86,7 +87,7 @@ int main(int argc, char** argv) {
         // forward pass: python task.setWeights + act
         const double Wv[6] = {-2, -1, -0.5, 0.5, 1, 2};
         const int nIn = g["nIn"], nOut = g["nOut"];
-        auto net = wann::AnnCarTask::compile(ind.wVec, ind.aVec, nIn, nOut);
+        auto net = wann::CompiledNet::compile(ind.wVec, ind.aVec, nIn, nOut);
         std::vector<double> node(N), out(nOut);
         for (const auto& a : g["act"]) {
             std::vector<double> in = a["in"].get<std::vector<double>>();

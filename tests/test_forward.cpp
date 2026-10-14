@@ -3,6 +3,7 @@
 //      on topologies produced by genetic operators alone (random fitness, no environment);
 //   2. evaluating a network on the car task is deterministic for a fixed seed and finite.
 #include "../include/wann/AnnCarTask.h"
+#include "../include/wann/CompiledNet.h"
 #include "../include/wann/Hyperparams.h"
 #include "../include/wann/Ind.h"
 #include "../include/wann/Random.h"
@@ -16,7 +17,7 @@ static int failures = 0;
 
 int main() {
     wann::Hyperparams hyp;
-    hyp.popSize = 64; hyp.alg_nReps = 2; hyp.car_episode_steps = 200;
+    hyp.popSize = 64; hyp.alg_nReps = 2; hyp.episode_steps = 200;
     hyp.ann_nInput = 9; hyp.ann_nOutput = 2;
     wann::seedRng(1);
 
@@ -33,7 +34,7 @@ int main() {
             if (ind.wVec.empty()) continue;
             ++nets;
             if (ind.nNodes > 1 + hyp.ann_nInput + hyp.ann_nOutput) ++withHidden;
-            auto net = wann::AnnCarTask::compile(ind.wVec, ind.aVec, hyp.ann_nInput, hyp.ann_nOutput);
+            auto net = wann::CompiledNet::compile(ind.wVec, ind.aVec, hyp.ann_nInput, hyp.ann_nOutput);
             std::vector<double> node(net.nNodes), out(hyp.ann_nOutput);
             for (double w : task.weightVals()) {
                 auto wMat = wann::setWeights(ind.wVec, w);

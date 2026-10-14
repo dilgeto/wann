@@ -47,8 +47,17 @@ struct Hyperparams {
     // alg_wDist == "linspace": shared weights are linspace(-absWCap, absWCap, alg_nVals).
     double ann_absWCap        = 2.0;
 
-    // --- car task ---
-    int    car_episode_steps  = 1000;   // max env steps per episode
+    // --- tasks ---
+    // Max env steps per episode; 0 = the task's own default (car 1000, acrobot 500,
+    // mountain car 200, bottleneck 200, bipedal the environment's limit).
+    int    episode_steps      = 0;
+    // Potential-based shaping added to the training fitness (acrobot: tip height;
+    // mountain car: sin(3*position); bottleneck: sum of agents' x position). 0 = off.
+    double reward_shaping_scale = 0.0;
+    // BipedalWalker: true = Hardcore-v3 (pits/stumps/stairs), false = plain v3.
+    bool   bipedal_hardcore   = true;
+    // Bottleneck: per-step penalty for moving opposite to one's own heading (0 = off).
+    double bottleneck_reverse_penalty_scale = 0.0;
 };
 
 namespace detail {
@@ -82,7 +91,11 @@ inline void applyJson(Hyperparams& p, const nlohmann::json& j) {
     get(p.ann_initAct,            "ann_initAct");
     get(p.ann_actRange,           "ann_actRange");
     get(p.ann_absWCap,            "ann_absWCap");
-    get(p.car_episode_steps,      "car_episode_steps");
+    get(p.episode_steps,          "episode_steps");
+    get(p.episode_steps,          "bipedal_max_steps");   // wann-cpp's name for the same cap
+    get(p.reward_shaping_scale,   "reward_shaping_scale");
+    get(p.bipedal_hardcore,       "bipedal_hardcore");
+    get(p.bottleneck_reverse_penalty_scale, "bottleneck_reverse_penalty_scale");
 }
 
 // Parse a string that is either a file path or an inline JSON object.

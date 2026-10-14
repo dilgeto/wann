@@ -4,7 +4,7 @@
     "popSize": 480,
     "alg_wDist": "standard",
     "alg_nVals": 6,
-    "alg_nReps": 4,
+    "alg_nReps": 6,
     "alg_probMoo": 0.8,
     "ann_nInput": 9,
     "ann_nOutput": 2,
@@ -33,5 +33,5 @@
     "save_mod": 8,
     "bestReps": 20,
     "early_stop_patience": 0,
-    "car_episode_steps": 1000
+    "episode_steps": 1000
 }
