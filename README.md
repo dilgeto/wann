@@ -71,7 +71,7 @@ bash run_all.sh                      # acrobot, disc_mc and car in sequence; no 
 Tasks: `car acrobot disc_mc bipedal bottleneck`. Results land in `screening_reduce/<task>/` (`results.csv`,
 `space_log.jsonl`, `analysis.txt`) and `screening_full/<task>/` (`p2_results.csv`, `p3_summary.csv`,
 `p3_configs/rank<NN>_seed<NN>.json`, ...); the trainers' logs in `log/reduce_<task>/`, `log/full_p2_<task>/`,
-`log/full_p3_<task>/`. `--mode analyse` re-reads them without running anything; `--tag X` keeps a run apart.
+`log/full_p3_<task>/`. `--mode analyse` re-reads them without running anything; `--tag X` keeps a run apart (own `screening_full/<task>_X/`, `log/full_p*_<task>_X/`). To redo Phase 2/3 on top of an existing Phase 1 without overwriting anything: `python screening_full.py --task car --tag v2 --reduce-from car ...`.
 
 - **Phase 1** runs TPE trials of a short training (`TASK_DEFAULTS[..]["fidelity"]`), prunes with `MedianPruner` on `fitPeak`
   (polled from the stats file while it trains) and, after each round, drops the bins of every hyperparameter that are

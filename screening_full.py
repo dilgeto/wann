@@ -562,6 +562,12 @@ def parse_args() -> argparse.Namespace:
                          "reduced space, and Phase 2/3 write to their own "
                          "screening_full/{run_key}_{tag}/ output dir instead "
                          "of colliding with an existing run.")
+    ap.add_argument("--reduce-from", default=None, dest="reduce_from",
+                    help="run_key of the screening_reduce run whose reduced "
+                         "space is loaded (e.g. 'car'). Default: the run_key of "
+                         "this run (task + '_{tag}'). Use it with --tag to reuse "
+                         "an existing Phase 1 while writing Phase 2/3 to their "
+                         "own screening_full/{run_key}_{tag}/ dir.")
     ap.add_argument("--early-stop-patience", type=int, default=None,
                     dest="early_stop_patience",
                     help="Generations without a new fitTop record before a "
@@ -605,7 +611,7 @@ def main() -> None:
         sys.exit(1)
 
     # Load reduced space from matching screening_reduce run
-    space, source = load_reduced_space(rkey)
+    space, source = load_reduced_space(args.reduce_from or rkey)
     print(f"\n{'='*66}")
     print(f"  Task: {args.task}   run key: {rkey}   mode: {args.mode}")
     print(f"  Executable: {executable}")
